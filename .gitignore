@@ -1,0 +1,60 @@
+# Operating System & File System
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Binaries & Application Bundles
+*.app
+*.dmg
+*.pkg
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.iso
+
+# Build & Release Artifacts
+build/
+dist/
+out/
+target/
+releases/
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Temporary, Logs & Cache Directories
+*.log
+*.tmp
+*.temp
+tmp/
+temp/
+.cache/
+.npm/
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+*.token
+*.credentials
+secrets/
+
+# IDE & Editor Configuration
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

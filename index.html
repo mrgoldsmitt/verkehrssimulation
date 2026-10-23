@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Verkehrssimulation</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=0.0.7">
+    <link rel="apple-touch-icon" href="favicon.svg?v=0.0.7">
+    <link rel="stylesheet" href="style.css?v=0.0.7">
+    <link rel="manifest" href="manifest.json?v=0.0.7">
+    <meta name="theme-color" content="#ffffff">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Burger Button (transforms to X) -->
+        <button class="burger-btn" id="burgerBtn" aria-label="Menü öffnen/schließen">
+            <span class="bar bar-1"></span>
+            <span class="bar bar-2"></span>
+            <span class="bar bar-3"></span>
+        </button>
+
+        <div class="canvas-container">
+            <div id="timerDisplay" class="timer-display" style="display: none;">0.00s</div>
+            <canvas id="simCanvas"></canvas>
+        </div>
+
+        <!-- Right-Side Drawer/Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Einstellungen</h2>
+            </div>
+            <div class="controls-content">
+                <div class="control-group">
+                    <label for="scenarioSelect">Szenario</label>
+                    <div class="col">
+                        <select id="scenarioSelect">
+                            <option value="phantom">Phantomstau (Hidden-Chicken)</option>
+                            <option value="trafficLightClassic">Ampel (Klassisch)</option>
+                            <option value="trafficLightConnected">Ampel (Vernetzt)</option>
+                            <option value="overtake">Überholmanöver</option>
+                        </select>
+                        <button id="resetBtn" class="icon-btn">
+                            <svg class="btn-svg" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                <path d="M3 3v5h5"/>
+                            </svg>
+                            <span>Neustart</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="label-row">
+                        <label for="carCount">Anzahl Autos</label>
+                        <span id="carCountVal" class="val-badge">10</span>
+                    </div>
+                    <input type="range" id="carCount" min="1" max="20" step="1" value="10">
+                </div>
+
+                <!-- Ampel Optionen (Timer-Stopp-Modus) -->
+                <div class="control-group" id="trafficLightOptions">
+                    <label>Timer-Stopp</label>
+                    <div class="segmented-control" id="timerStopSegment">
+                        <button type="button" class="segment-btn active" id="btnStopAll" data-mode="allPassed" title="Stoppt automatisch, sobald alle Autos über die Ampel gefahren sind">
+                            Alle Autos drüber
+                        </button>
+                        <button type="button" class="segment-btn" id="btnStopRed" data-mode="manualRed" title="Stoppt erst, wenn die Ampel manuell auf Rot geschaltet wird">
+                            Bei manuellem Rot
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Geschwindigkeit</label>
+                    
+                    <div class="slider-subgroup">
+                        <div class="label-row">
+                            <span class="sub-label">Global (Verkehr)</span>
+                            <span id="globalSpeedVal" class="val-badge">1.0x</span>
+                        </div>
+                        <input type="range" id="globalSpeed" min="0.1" max="3" step="0.1" value="1">
+                    </div>
+                    
+                    <div class="highlighted-car-controls" id="carControls">
+                        <div class="label-row">
+                            <span class="sub-label">Zieltempo (<span id="carLabelText">Auto</span>)</span>
+                            <span id="carSpeedVal" class="val-badge">100 km/h</span>
+                        </div>
+                        <input type="range" id="carSpeed" min="0" max="150" step="1" value="100">
+                        <span class="hint">Auto im Canvas antippen zum Auswählen.</span>
+                    </div>
+                </div>
+
+                <div class="control-group hint-box">
+                    <label>Interaktions-Tipps</label>
+                    <div class="hints-list" id="scenarioHint">
+                        <!-- Wird per JS aktualisiert -->
+                    </div>
+                </div>
+                
+                <div class="sidebar-footer">
+                    <button class="changelog-btn" id="changelogBtn" aria-label="Changelog öffnen">
+                        <svg class="btn-svg" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <polyline points="10 9 9 9 8 9"/>
+                        </svg>
+                        <span>Changelog</span>
+                    </button>
+                    <div class="copyright">
+                        <a href="https://mrgoldsmitt.work" target="_blank" rel="noopener noreferrer">&copy; 2026 mrgoldsmitt</a>
+                        <span class="app-version">v0.0.7</span>
+                    </div>
+                </div>
+            </div> <!-- controls-content -->
+        </div> <!-- sidebar -->
+
+        <!-- Changelog Modal -->
+        <div class="modal-backdrop" id="changelogModal" style="display: none;">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3>Changelog</h3>
+                    <button class="modal-close-btn" id="closeChangelogBtn" aria-label="Schließen">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="changelog-item">
+                        <div class="changelog-tag-row">
+                            <span class="version-tag">v0.0.7</span>
+                            <span class="version-date">03.09.2026</span>
+                        </div>
+                        <ul>
+                            <li><strong>Optimierung Überholmanöver</strong>: Ausgewogene 50/50-Spurbelegung (5 Autos auf der Überholspur bei Standardeinstellung) für lebendigen Verkehrsfluss und realistische Überholvorgänge.</li>
+                            <li><strong>Reparatur des Überholzyklus</strong>: Vollständige Neukonzeption der Sicherheitsabstandsprüfung (<code>isSafeToChangeLane</code>) mit Relativgeschwindigkeitsanalyse. Autos scheren verzögerungsfrei aus (oder warten blinkend), ziehen am Zielfahrzeug vorbei und scheren sicher wieder auf Spur 0 ein.</li>
+                            <li><strong>Aktive Blinkeranzeige</strong>: Authentische gelbe Blinkleuchten an Front und Heck (links beim Ausscheren, rechts beim Wiedereinscheren).</li>
+                            <li><strong>Versionsanzeige in der Seitenleiste</strong>: Aktuelle Versionsnummer <code>v0.0.7</code> wird nun direkt in der Fußzeile der Seitenleiste angezeigt.</li>
+                        </ul>
+                    </div>
+                    <div class="changelog-item">
+                        <div class="changelog-tag-row">
+                            <span class="version-tag">v0.0.4</span>
+                            <span class="version-date">02.09.2026</span>
+                        </div>
+                        <ul>
+                            <li><strong>Präzise 1:1 Stoppuhr-Zeitmessung</strong>: Ampel-Timer läuft mit echter Stoppuhr-Präzision (bei 1.0x entspricht 1 Sekunde exakt 1.00s auf dem Display) und skaliert proportional zu jeder Einstellung des Geschwindigkeits-Reglers.</li>
+                            <li><strong>Vollständig randlose mobile Ansicht (Edge-to-Edge)</strong>: Straße und Canvas reichen auf Smartphones und Tablets (z. B. iPad, iPhone) ohne störende Ränder bis an die Außenkanten; Unterstützung von <code>viewport-fit=cover</code> und <code>env(safe-area-inset-*)</code>.</li>
+                            <li><strong>Exakte Ampel-Durchfahrtserkennung</strong>: Fahrzeuge werden über ihre tatsächliche Wegstrecke seit dem Umschalten auf Grün erfasst; kein vorzeitiges Stoppen mehr bei langen Autoschlangen (bis zu 20 Autos).</li>
+                            <li><strong>Physikalische Maßstabs-Kalibrierung</strong>: Saubere Trennung von physikalischen Einheiten (m, m/s, m/s²) und Canvas-Pixeln (5 px/m).</li>
+                            <li><strong>Automatisches Cache-Busting</strong>: Automatische Bereinigung alter Service-Worker-Caches beim Start.</li>
+                            <li><strong>Versionsanzeige im Footer</strong>: Anzeige der aktuellen Versionsnummer <code>v0.0.4</code> in der Fußzeile der Seitenleiste.</li>
+                        </ul>
+                    </div>
+                    <div class="changelog-item">
+                        <div class="changelog-tag-row">
+                            <span class="version-tag">v0.0.3</span>
+                            <span class="version-date">31.08.2026</span>
+                        </div>
+                        <ul>
+                            <li><strong>Network-First & Cache-Busting</strong>: Seite und Skripte/Stylesheets werden bei bestehender Internetverbindung immer direkt aktuell vom Server geladen; veraltete Service-Worker-Caches werden beim Start automatisch bereinigt.</li>
+                            <li><strong>Gezielte Interaktion im Überholszenario</strong>: Klick auf ein Auto auf Spur 1 bewegt dieses Auto auf die untere Spur (Spur 0). Klick auf ein Auto auf Spur 0 startet einen gezielten Überholvorgang.</li>
+                            <li><strong>Einheitlicher Ampel-Timer Toggle</strong>: Kompakter 2-Stufen-Segment-Toggle (<code>Alle Autos drüber</code> ↔ <code>Bei manuellem Rot</code>).</li>
+                            <li><strong>App-Titel & SVG-Favicon</strong>: Titel in <code>Verkehrssimulation</code> umbenannt und modernes SVG-Favicon hinzugefügt.</li>
+                            <li><strong>100% SVG-Vektorgrafiken</strong>: Alle Buttons, Hinweiskästen und das Canvas-Hindernis (Vektor-Huhn) als gestochen scharfe Vektoren gerendert.</li>
+                        </ul>
+                    </div>
+                    <div class="changelog-item">
+                        <div class="changelog-tag-row">
+                            <span class="version-tag">v0.0.2</span>
+                            <span class="version-date">31.08.2026</span>
+                        </div>
+                        <ul>
+                            <li><strong>Mobile Ansicht & 50% Skalierung</strong>: Einstellungen für iPad (8. Gen, 810×1080 / 1080×810) und kleinere Bildschirme um 50% kompakter gestaltet.</li>
+                            <li><strong>Rechte Seitenleiste & Burger-Menü</strong>: Einstellungsbereich als Slide-in-Drawer auf der rechten Seite mit Burger-zu-X Animation.</li>
+                            <li><strong>Direkte Canvas-Interaktionen</strong>: Entfernung der Aktions-Buttons; Umschalten der Ampel per Klick auf die Ampel, Huhn-Spawnen per Klick auf Auto, Überholen (1x Klick) und Huhn (2x Klick schnell) im Überholszenario.</li>
+                            <li><strong>Fahrzeug-Schieberegler</strong>: Stufenlose Einstellung von 1 bis 20 Autos für alle Szenarien.</li>
+                            <li><strong>Fahrzeug-Kennzeichnung</strong>: Fortlaufende Nummern (1, 2, 3...) auf allen Autos; im Überholmanöver rote Autos mit Nummern und blaue Autos mit Buchstaben (A, B, C...).</li>
+                            <li><strong>Changelog & Copyright</strong>: Integriertes Changelog-Popup und Copyright-Link auf <a href="https://mrgoldsmitt.work" target="_blank" rel="noopener noreferrer">mrgoldsmitt.work</a>.</li>
+                        </ul>
+                    </div>
+                    <div class="changelog-item">
+                        <div class="changelog-tag-row">
+                            <span class="version-tag">v0.0.1</span>
+                            <span class="version-date">Initial</span>
+                        </div>
+                        <ul>
+                            <li>Initialversion der Verkehrssimulation mit Intelligent Driver Model (IDM).</li>
+                            <li>Szenarien: Phantomstau (Hidden-Chicken), Ampelsimulation (Klassisch & Vernetzt) und Überholmanöver.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- app-container -->
+
+    <script src="app.js?v=0.0.7"></script>
+    <script>
+        // Automatische Bereinigung alter Service-Worker-Caches
+        if ('caches' in window) {
+            caches.keys().then(keys => {
+                keys.forEach(key => {
+                    if (key !== 'verkehrssim-v0.0.7') {
+                        caches.delete(key);
+                    }
+                });
+            });
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js?v=0.0.7', { updateViaCache: 'none' }).then(reg => {
+                    // Update prüfen
+                    reg.update();
+
+                    // Wenn ein neuer Service Worker installiert wird, sofort neu laden
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        if (newWorker) {
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    });
+                }).catch(err => {
+                    console.error('Service Worker registration failed', err);
+                });
+
+                // Auch bei Rückkehr zum Tab / App-Wechsel auf Aktualisierungen prüfen
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'visible') {
+                        navigator.serviceWorker.ready.then(reg => reg.update());
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

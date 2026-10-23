@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="redCar" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff5555"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <linearGradient id="blueCar" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+  <!-- Background rounded app icon -->
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  
+  <!-- Road lanes -->
+  <rect x="6" y="14" width="52" height="36" rx="6" fill="#334155"/>
+  <line x1="10" y1="32" x2="54" y2="32" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="6,5" opacity="0.6"/>
+  
+  <!-- Fast Red Car (Lane 1 - top) -->
+  <rect x="28" y="19" width="22" height="9" rx="3" fill="url(#redCar)"/>
+  <rect x="33" y="20.5" width="5" height="6" rx="1" fill="#450a0a" opacity="0.6"/>
+  
+  <!-- Slower Blue Car (Lane 0 - bottom) -->
+  <rect x="12" y="36" width="20" height="9" rx="3" fill="url(#blueCar)"/>
+  <rect x="17" y="37.5" width="4.5" height="6" rx="1" fill="#082f49" opacity="0.6"/>
+
+  <!-- Traffic Light accent (green beacon) -->
+  <circle cx="53" cy="23.5" r="3.5" fill="#22c55e"/>
+  <circle cx="53" cy="23.5" r="1.5" fill="#ffffff" opacity="0.7"/>
+</svg>
