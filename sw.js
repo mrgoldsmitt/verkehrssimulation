@@ -1,4 +1,4 @@
-const CACHE_NAME = 'verkehrssim-v0.0.7';
+const CACHE_NAME = 'verkehrssim-v0.1.0';
 const ASSETS = [
     './',
     './index.html',

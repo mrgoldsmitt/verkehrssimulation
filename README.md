@@ -2,11 +2,19 @@
 
 Interaktive, physikbasierte Verkehrssimulation im Browser mit dem **Intelligent Driver Model (IDM)**, realistischem Spurwechselverhalten (MOBIL-inspiriert) und verschiedenen Verkehrsszenarien.
 
+[![Live Demo](https://img.shields.io/badge/Demo-Cloudflare%20Edge-F38020?style=flat&logo=cloudflare&logoColor=white)](https://verkehrssimulation.sebastian-d19.workers.dev)
 ![HTML5 Canvas](https://img.shields.io/badge/HTML5-Canvas-E34F26?style=flat&logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla%20ES6+-F7DF1E?style=flat&logo=javascript&logoColor=black)
 ![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8?style=flat)
-![Version](https://img.shields.io/badge/Version-v0.0.7-blue?style=flat)
+![Version](https://img.shields.io/badge/Version-v0.1.0-blue?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
+
+---
+
+## 🌐 Live-Demo
+
+Die Anwendung wird weltweit über das Cloudflare Edge-Netzwerk gehostet:  
+👉 **[https://verkehrssimulation.sebastian-d19.workers.dev](https://verkehrssimulation.sebastian-d19.workers.dev)**
 
 ---
 
@@ -64,18 +72,20 @@ npx serve .
 
 ## 🛠️ Release & Deployment
 
-Zum Erstellen eines neuen Releases und Deployment auf GitHub kann das Skript `deploy_release.sh` verwendet werden:
+Zum Erstellen eines neuen Releases, Deployment zu Cloudflare und Veröffentlichung auf GitHub kann das Skript `deploy_release.sh` verwendet werden:
 
 ```bash
 chmod +x deploy_release.sh
-./deploy_release.sh
-```
 
-Das Skript:
-1. Ermittelt die aktuelle Versionsnummer aus dem Projekt.
-2. Erstellt ein ZIP-Release-Archiv in `dist/`.
-3. Erstellt den entsprechenden Git-Tag (z. B. `v0.0.7`).
-4. Veröffentlicht das Release mitsamt ZIP-Artefakt über die GitHub CLI (`gh`).
+# Nur Offline-Paket bauen
+./deploy_release.sh --build-only
+
+# Zu Cloudflare Workers deployen
+./deploy_release.sh --cf-deploy
+
+# Kompletten Release-Zyklus durchführen (Build, Cloudflare & GitHub Release)
+./deploy_release.sh --all
+```
 
 ---
 

@@ -114,7 +114,7 @@
                     </button>
                     <div class="copyright">
                         <a href="https://mrgoldsmitt.work" target="_blank" rel="noopener noreferrer">&copy; 2026 mrgoldsmitt</a>
-                        <span class="app-version">v0.0.7</span>
+                        <span class="app-version">v0.1.0</span>
                     </div>
                 </div>
             </div> <!-- controls-content -->
@@ -133,6 +133,18 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="changelog-item">
+                        <div class="changelog-tag-row">
+                            <span class="version-tag">v0.1.0</span>
+                            <span class="version-date">23.10.2026</span>
+                        </div>
+                        <ul>
+                            <li><strong>Open Source GitHub Release</strong>: Bereinigung und Veröffentlichung als öffentliches Repository auf GitHub (<a href="https://github.com/mrgoldsmitt/verkehrssimulation" target="_blank" rel="noopener noreferrer">mrgoldsmitt/verkehrssimulation</a>) unter der MIT-Lizenz.</li>
+                            <li><strong>Cloudflare Edge Deployment</strong>: Schnelles, weltweites Hosting über Cloudflare Workers mit Static Assets und serverseitigem Zugriffsschutz für sensible Projektdateien.</li>
+                            <li><strong>Automatisierte Release-Pipeline</strong>: Bereitstellung von <code>deploy_release.sh</code> zur flexiblen Paketierung, Cloudflare-Deployment und GitHub-Release-Erstellung.</li>
+                            <li><strong>Dokumentation & Spezifikation</strong>: Ausführliches <code>README.md</code> und Integration in die Obsidian-Projektarchitektur.</li>
+                        </ul>
+                    </div>
                     <div class="changelog-item">
                         <div class="changelog-tag-row">
                             <span class="version-tag">v0.0.7</span>
@@ -201,13 +213,13 @@
         </div>
     </div> <!-- app-container -->
 
-    <script src="app.js?v=0.0.7"></script>
+    <script src="app.js?v=0.1.0"></script>
     <script>
         // Automatische Bereinigung alter Service-Worker-Caches
         if ('caches' in window) {
             caches.keys().then(keys => {
                 keys.forEach(key => {
-                    if (key !== 'verkehrssim-v0.0.7') {
+                    if (key !== 'verkehrssim-v0.1.0') {
                         caches.delete(key);
                     }
                 });
@@ -216,7 +228,7 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js?v=0.0.7', { updateViaCache: 'none' }).then(reg => {
+                navigator.serviceWorker.register('sw.js?v=0.1.0', { updateViaCache: 'none' }).then(reg => {
                     // Update prüfen
                     reg.update();
 

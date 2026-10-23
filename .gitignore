@@ -38,6 +38,7 @@ tmp/
 temp/
 .cache/
 .npm/
+.wrangler/
 
 # Environment Variables & Secrets
 .env
